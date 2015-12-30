@@ -47,13 +47,18 @@ namespace DistributedEventStream.Core.ActorSystems
 
         protected override void InstallActors(ActorSystem actorSystem)
         {
-            ForwardingActor = actorSystem.ActorOf<ForwardingActor>("forwarder");
+            ForwardingActor = CreateForwardingActor(actorSystem);
             _localPublisher = actorSystem.ActorOf<LocalEventStreamPublisher>("local-publisher");
 
             foreach (var actor in _getOtherActors())
             {
                 ForwardingActor.Tell(new ActorAssociation(actor));
             }
+        }
+
+        protected virtual IActorRef CreateForwardingActor(ActorSystem actorSystem)
+        {
+            return actorSystem.ActorOf<ForwardingActor>("forwarder");
         }
 
         protected IActorRef ForwardingActor { get; private set; }

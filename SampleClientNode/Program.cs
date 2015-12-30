@@ -16,7 +16,7 @@ namespace SampleClientNode
         {
             var systemName = "MyActorSystem";
 
-            var defaultPort = 8080;
+            var defaultPort = 8081;
             int? port = defaultPort;
             var parser = new FluentCommandLineParser();
 
@@ -38,9 +38,11 @@ namespace SampleClientNode
 
             // This is a list of ports to use as a shortcut so that I don't have to type every address
             // by hand
+            var defaultRemotePort = 8080;
             var portList = new List<int>();
             parser.Setup<List<int>>('l', "portlist")
-                .Callback(items => portList = items);
+                .Callback(items => portList = items)
+                .SetDefault(new List<int> { defaultRemotePort });
 
             var actorPath = string.Empty;
             parser.Setup<string>('a', "actorpath")
@@ -68,7 +70,7 @@ namespace SampleClientNode
             Console.WriteLine($"Other Actors: {string.Join(", ", otherActors)}");
 
             IActorSystemHost host = new SampleHost(selectedPort, otherActors);
-            
+
             host.Run(systemName);
         }
         public static string GetLocalIPAddress()

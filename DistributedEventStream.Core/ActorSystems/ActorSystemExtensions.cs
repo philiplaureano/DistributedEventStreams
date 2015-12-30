@@ -10,6 +10,15 @@ namespace DistributedEventStream.Core.ActorSystems
     {
         public static IActorRef ForwardEventStreamMessages<TMessage>(this ActorSystem actorSystem,
             IActorRef targetActor,
+            Func<TMessage, string> getChannelName,
+            Func<TMessage, bool> eventFilter = null)
+        {
+            return actorSystem.ForwardEventStreamMessages<TMessage>(targetActor,
+                msg => new Forward<TMessage>(msg, getChannelName(msg), null, typeof (TMessage)));
+        }
+
+        public static IActorRef ForwardEventStreamMessages<TMessage>(this ActorSystem actorSystem,
+            IActorRef targetActor,
             Func<TMessage, Forward<TMessage>> eventPackager,
             Func<TMessage, bool> eventFilter = null)
         {
