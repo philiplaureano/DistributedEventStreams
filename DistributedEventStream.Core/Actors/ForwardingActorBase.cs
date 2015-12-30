@@ -16,7 +16,15 @@ namespace DistributedEventStream.Core.Actors
                 // Determine the list of remote actor systems and target actors
                 var actors = GetForwardingActors(message).ToArray();
                 var logger = Context.GetLogger();
+
+                if (actors.Length == 0)
+                {
+                    logger.Warning("Unable to forward messages -- no actors found.");
+                    return;
+                }
+
                 logger.Warning($"Forwarding messages to {actors.Length} actors");
+
                 // Fire and forget
                 foreach (var actor in actors)
                 {

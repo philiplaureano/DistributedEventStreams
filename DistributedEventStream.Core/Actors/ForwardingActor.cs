@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using Akka.Actor;
 using Akka.Event;
+using Akka.Remote.Transport;
 using DistributedEventStream.Core.Messages;
 
 namespace DistributedEventStream.Core.Actors

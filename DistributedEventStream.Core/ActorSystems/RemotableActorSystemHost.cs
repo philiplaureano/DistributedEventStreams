@@ -1,6 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using Akka.Actor;
+using Akka.Event;
 using DistributedEventStream.Core.Actors;
 using DistributedEventStream.Core.Messages;
 
@@ -8,19 +10,25 @@ namespace DistributedEventStream.Core.ActorSystems
 {
     public class RemotableActorSystemHost : ActorSystemHostBase
     {
+        private readonly Func<IEnumerable<string>> _getOtherActors;
         private int _port;
-        private readonly IEnumerable<string> _otherActors;
         private IActorRef _localPublisher;
-        public RemotableActorSystemHost(int port, IEnumerable<string> otherActors)
+
+        public RemotableActorSystemHost(int port, Func<IEnumerable<string>> getOtherActors)
         {
             _port = port;
-            _otherActors = otherActors;
+            _getOtherActors = getOtherActors;
+        }
+
+        public RemotableActorSystemHost(int port, IEnumerable<string> otherActors) 
+            : this(port, otherActors.ToArray)
+        {
         }
 
         protected override void AddConfigurationSettings(IDictionary<string, string> configEntries)
         {
             configEntries["akka.actor.provider"] = "\"Akka.Remote.RemoteActorRefProvider, Akka.Remote\"";
-            configEntries["akka.remote.helios.tcp.port"] = HostAddressHelpers.GetNextFreeTcpPort().ToString();
+            configEntries["akka.remote.helios.tcp.port"] = _port.ToString();
             configEntries["akka.remote.helios.tcp.hostname"] = HostAddressHelpers.GetLocalIPAddress();
 
             Action<string, string> setKey = (key, value) => { configEntries[key] = value; };
@@ -42,7 +50,7 @@ namespace DistributedEventStream.Core.ActorSystems
             ForwardingActor = actorSystem.ActorOf<ForwardingActor>("forwarder");
             _localPublisher = actorSystem.ActorOf<LocalEventStreamPublisher>("local-publisher");
 
-            foreach (var actor in _otherActors)
+            foreach (var actor in _getOtherActors())
             {
                 ForwardingActor.Tell(new ActorAssociation(actor));
             }

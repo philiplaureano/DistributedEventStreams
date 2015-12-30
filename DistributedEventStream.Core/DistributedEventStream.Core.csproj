@@ -85,6 +85,7 @@
     <Compile Include="ActorSystems\HostAddressHelpers.cs" />
     <Compile Include="ActorSystems\RemotableActorSystemHost.cs" />
     <Compile Include="Actors\ActorAdapter.cs" />
+    <Compile Include="Actors\EventForwarder.cs" />
     <Compile Include="Actors\ForwardingActor.cs" />
     <Compile Include="Actors\ForwardingActorBase.cs" />
     <Compile Include="Actors\LocalEventStreamPublisher.cs" />
