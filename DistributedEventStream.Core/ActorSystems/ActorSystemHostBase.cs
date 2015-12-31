@@ -29,6 +29,17 @@ namespace DistributedEventStream.Core.ActorSystems
         }
         protected virtual void AddConfigurationSettings(IDictionary<string, string> configEntries)
         {
+            Action<string, string> setKey = (key, value) => { configEntries[key] = value; };
+
+            setKey("akka.stdout-loglevel", "DEBUG");
+            setKey("akka.loglevel", "DEBUG");
+            setKey("akka.log-config-on-start", "on");
+
+            setKey("akka.actor.debug.receive", "on");
+            setKey("akka.actor.debug.autoreceive", "on");
+            setKey("akka.actor.debug.lifecycle", "on");
+            setKey("akka.actor.debug.event-stream", "on");
+            setKey("akka.actor.debug.unhandled", "on");
         }
     }
 }

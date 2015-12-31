@@ -5,11 +5,11 @@ namespace DistributedEventStream.Core.Messages
 {
     public class Forward<TMessage> : IForwardMessage
     {
-        public Forward(TMessage message, string channel, IActorRef sender, Type messageType)
+        public Forward(TMessage message, string channel, string originAddress, Type messageType)
         {
             Message = message;
             Channel = channel;
-            Sender = sender;
+            OriginAddress = originAddress;
             MessageType = messageType;
         }
 
@@ -17,7 +17,7 @@ namespace DistributedEventStream.Core.Messages
         object IForwardMessage.Message => Message;
 
         public string Channel { get; }
-        public IActorRef Sender { get; }
+        public string OriginAddress { get; }
         public Type MessageType { get; }
     }
 }

@@ -30,19 +30,6 @@ namespace DistributedEventStream.Core.ActorSystems
             configEntries["akka.actor.provider"] = "\"Akka.Remote.RemoteActorRefProvider, Akka.Remote\"";
             configEntries["akka.remote.helios.tcp.port"] = _port.ToString();
             configEntries["akka.remote.helios.tcp.hostname"] = HostAddressHelpers.GetLocalIPAddress();
-
-            Action<string, string> setKey = (key, value) => { configEntries[key] = value; };
-
-            setKey("akka.stdout-loglevel", "DEBUG");
-            setKey("akka.loglevel", "DEBUG");
-            setKey("akka.log-config-on-start", "on");
-
-
-            setKey("akka.actor.debug.receive", "on");
-            setKey("akka.actor.debug.autoreceive", "on");
-            setKey("akka.actor.debug.lifecycle", "on");
-            setKey("akka.actor.debug.event-stream", "on");
-            setKey("akka.actor.debug.unhandled", "on");
         }
 
         protected override void InstallActors(ActorSystem actorSystem)
@@ -62,5 +49,20 @@ namespace DistributedEventStream.Core.ActorSystems
         }
 
         protected IActorRef ForwardingActor { get; private set; }
+
+        protected virtual string GetAddress(ActorSystem actorSystem)
+        {
+            var systemName = actorSystem.Name;
+            var currentIpAddress = HostAddressHelpers.GetLocalIPAddress();
+            var portNumber = _port;
+            return $"akka.tcp://{systemName}@{currentIpAddress}:{portNumber}";
+        }
+
+        protected IActorRef ForwardEventStreamMessages<TMessage>(ActorSystem actorSystem, string targetChannelName, 
+            Func<TMessage, bool> messageFilter = null)
+        {            
+            return actorSystem.ForwardEventStreamMessages(ForwardingActor,
+                msg => targetChannelName, GetAddress(actorSystem), messageFilter);
+        }
     }
 }

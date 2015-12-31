@@ -16,9 +16,7 @@ namespace SampleClientNode
         protected override void InstallActors(ActorSystem actorSystem)
         {
             base.InstallActors(actorSystem);
-
-            actorSystem.ForwardEventStreamMessages<GreetMessage>(ForwardingActor,
-                msg => "TestChannel");
+            ForwardEventStreamMessages<GreetMessage>(actorSystem, "TestChannel");
 
             for (var i = 0; i < 100; i++)
             {

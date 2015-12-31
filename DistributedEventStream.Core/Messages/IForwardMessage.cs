@@ -7,7 +7,7 @@ namespace DistributedEventStream.Core.Messages
     {
         object Message { get; }
         string Channel { get; }
-        IActorRef Sender { get; }
+        string OriginAddress { get; }
         Type MessageType { get; }
     }
 }
