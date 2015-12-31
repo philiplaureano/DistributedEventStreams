@@ -20,13 +20,11 @@ namespace DistributedEventStream.Core.Actors
                 
                 if (actors.Length == 0)
                 {
-                    Stash.Stash();
                     logger.Warning("Unable to forward messages -- no actors found.");
                     return;
                 }
 
-                Stash.UnstashAll();
-                logger.Warning($"Forwarding messages to {actors.Length} actors");
+                logger.Debug($"Forwarding messages to {actors.Length} actors");
 
                 // Fire and forget
                 foreach (var actor in actors)

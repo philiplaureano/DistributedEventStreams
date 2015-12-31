@@ -18,9 +18,13 @@ namespace SampleClientNode
             base.InstallActors(actorSystem);
             ForwardEventStreamMessages<GreetMessage>(actorSystem, "TestChannel");
 
-            for (var i = 0; i < 100; i++)
+            // Send the same message for 5 minutes
+            var startTime = DateTime.Now;
+            var endTime = startTime.AddMinutes(5);
+            var i = 0;
+            while(DateTime.Now < endTime)
             {
-                actorSystem.EventStream.Publish(new GreetMessage($"Message #{i}: Hello World!"));
+                actorSystem.EventStream.Publish(new GreetMessage($"Message #{i++}: Hello World!"));
             }
         }
     }

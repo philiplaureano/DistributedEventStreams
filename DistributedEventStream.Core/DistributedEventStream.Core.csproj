@@ -92,6 +92,7 @@
     <Compile Include="Actors\ForwardedMessageRedirector.cs" />
     <Compile Include="Messages\ActorAssociation.cs" />
     <Compile Include="Messages\ActorDissasociation.cs" />
+    <Compile Include="Messages\ActorHeartbeatMessage.cs" />
     <Compile Include="Messages\Forward.cs" />
     <Compile Include="Messages\IActorAssociation.cs" />
     <Compile Include="Messages\IActorDissasociation.cs" />
