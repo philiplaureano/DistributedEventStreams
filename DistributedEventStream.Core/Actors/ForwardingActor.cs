@@ -8,42 +8,6 @@ using DistributedEventStream.Core.Messages;
 
 namespace DistributedEventStream.Core.Actors
 {
-    public class ActorHeartbeatResolver : ReceiveActor
-    {
-        private string _actorAddress;
-        private readonly IActorRef _parentActor;
-        private readonly TimeSpan _refreshRate;
-        private readonly TimeSpan _timeoutPeriod;
-
-        public ActorHeartbeatResolver(string actorAddress, IActorRef parentActor, TimeSpan refreshRate, TimeSpan timeoutPeriod)
-        {
-            _actorAddress = actorAddress;
-            _parentActor = parentActor;
-            _refreshRate = refreshRate;
-            _timeoutPeriod = timeoutPeriod;
-
-            Receive<ActorHeartbeatMessage>(message =>
-            {
-                if (message.ActorAddress != actorAddress)
-                    return;
-
-                try
-                {
-                    var targetActor = Context.ActorSelection(_actorAddress).ResolveOne(_timeoutPeriod).Result;
-                }
-                catch (AggregateException aggregateException)
-                {
-                    _parentActor.Tell(new ActorDissasociation(_actorAddress));
-                    Self.Tell(PoisonPill.Instance);
-                }
-            });
-        }
-
-        protected override void PreStart()
-        {
-            Context.System.Scheduler.ScheduleTellRepeatedly(TimeSpan.FromSeconds(1), _refreshRate, Self, new ActorHeartbeatMessage(_actorAddress),Self);           
-        }
-    }
     public class ForwardingActor : ForwardingActorBase
     {
         private readonly Dictionary<string, IActorRef> _actorAddresses = new Dictionary<string, IActorRef>();
@@ -56,6 +20,14 @@ namespace DistributedEventStream.Core.Actors
                     return;
 
                 var logger = Context.GetLogger();
+
+                // Add the address only if it can be resolved from the start
+                if (!Context.ActorSelection(message.ActorAddress).CanResolve(TimeSpan.FromSeconds(20)))
+                {
+                    logger.Error($"Unable to resolve forwarding actor address '{message.ActorAddress}'");
+                    return;
+                }
+
                 logger.Warning($"Actor associated: {message.ActorAddress}");
                 _actorAddresses[message.ActorAddress] =
                     Context.ActorOf(Props.Create(() => new ActorAdapter(message.ActorAddress)));
