@@ -89,6 +89,7 @@
     <Compile Include="Actors\RelayActor.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="DistributedEventStream.Routing.nuspec" />
     <None Include="packages.config" />
     <None Include="protos\google\protobuf\csharp_options.proto" />
     <None Include="protos\google\protobuf\descriptor.proto" />

@@ -1,0 +1,28 @@
+<?xml version="1.0"?>
+<package >
+  <metadata>
+    <id>$id$</id>
+    <version>$version$</version>
+    <title>$title$</title>
+    <authors>Philip Laureano</authors>
+    <owners>Philip Laureano</owners>
+    <licenseUrl>https://opensource.org/licenses/MIT</licenseUrl>
+    <projectUrl>https://github.com/philiplaureano/DistributedEventStreams</projectUrl>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <description>A library for Akka.NET that implements routing for a lightweight, distributed event stream (aka Event Bus)</description>
+    <releaseNotes></releaseNotes>
+    <copyright>Copyright 2016 - Philip Laureano</copyright>
+    <tags>akka bus routing</tags>
+    <dependencies>
+      <dependency id="Akka" version="1.0.5"/>
+      <dependency id="Akka.Remote" version="1.0.5"/>
+      <dependency id="Newtonsoft.Json" version="7.0.1"/>
+      <dependency id="Akka.Configuration" version="1.0.5835.36887"/>
+      <dependency id="Akka.Configuration.Builders" version="1.0.5837.18449"/>
+      <dependency id="Akka.Configuration.Builders.Hocon" version="1.0.5837.18449"/>
+      <dependency id="Helios" version="1.4.1"/>
+      <dependency id="Google.ProtocolBuffers" version="2.4.1.521"/>
+      <dependency id="Akka.Configuration.Lambdas" version="1.0.5840.30145"/>
+    </dependencies>
+  </metadata>
+</package>
