@@ -30,6 +30,7 @@ namespace DistributedEventStream.Core.ActorSystems
             configEntries["akka.actor.provider"] = "\"Akka.Remote.RemoteActorRefProvider, Akka.Remote\"";
             configEntries["akka.remote.helios.tcp.port"] = _port.ToString();
             configEntries["akka.remote.helios.tcp.hostname"] = HostAddressHelpers.GetLocalIPAddress();
+
         }
 
         protected override void InstallActors(ActorSystem actorSystem)
