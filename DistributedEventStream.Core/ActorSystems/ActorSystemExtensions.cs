@@ -32,7 +32,8 @@ namespace DistributedEventStream.Core.ActorSystems
 
             return eventForwarder;
         }
-        public static IActorRef RedirectForwardedMessagesTo<TMessage>(this ActorSystem actorSystem, IActorRef targetActor, Func<Forward<TMessage>, bool> messageFilter = null)
+        public static IActorRef RedirectForwardedMessagesTo<TMessage>(this ActorSystem actorSystem, 
+            IActorRef targetActor, Func<Forward<TMessage>, bool> messageFilter = null)
         {
             var redirector = actorSystem.ActorOf(Props.Create(() => 
                 new ForwardedMessageRedirector<TMessage>(targetActor, messageFilter)));

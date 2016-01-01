@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3189C55F-4601-4550-98EA-C7CCD590DF31}</ProjectGuid>
+    <ProjectGuid>{E68F76E2-79F6-40BF-B2DC-49AC2C55A1E7}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>DistributedEventStream.Routing</RootNamespace>
-    <AssemblyName>DistributedEventStream.Routing</AssemblyName>
+    <RootNamespace>DistributedEventStream.Routing.Tests</RootNamespace>
+    <AssemblyName>DistributedEventStream.Routing.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -20,6 +20,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <PlatformTarget>AnyCPU</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -54,6 +55,14 @@
       <HintPath>..\packages\Akka.Remote.1.0.5\lib\net45\Akka.Remote.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Akka.TestKit, Version=1.0.5.14, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Akka.TestKit.1.0.5\lib\net45\Akka.TestKit.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Akka.TestKit.VsTest, Version=1.0.5.14, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\Akka.TestKit.VsTest.1.0.5\lib\net45\Akka.TestKit.VsTest.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Google.ProtocolBuffers, Version=2.4.1.521, Culture=neutral, PublicKeyToken=55f7125234beb589, processorArchitecture=MSIL">
       <HintPath>..\packages\Google.ProtocolBuffers.2.4.1.521\lib\net40\Google.ProtocolBuffers.dll</HintPath>
       <Private>True</Private>
@@ -66,8 +75,13 @@
       <HintPath>..\packages\Helios.1.4.1\lib\net45\Helios.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.1.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="Newtonsoft.Json, Version=7.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Shouldly, Version=2.6.0.0, Culture=neutral, PublicKeyToken=6042cbcb05cbc941, processorArchitecture=MSIL">
+      <HintPath>..\packages\Shouldly.2.6.0\lib\net40\Shouldly.dll</HintPath>
       <Private>True</Private>
     </Reference>
     <Reference Include="System" />
@@ -80,19 +94,30 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Actors\RegistryActor.cs" />
-    <Compile Include="Messages\AssociateActorWithChannel.cs" />
-    <Compile Include="Messages\AssociatedWithChannel.cs" />
-    <Compile Include="Messages\DisassociateActorFromChannel.cs" />
-    <Compile Include="Messages\DisassociatedFromChannel.cs" />
+    <Compile Include="RegistryActorTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Actors\RelayActor.cs" />
+    <Compile Include="RelayActorTests.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="app.config" />
     <None Include="packages.config" />
     <None Include="protos\google\protobuf\csharp_options.proto" />
     <None Include="protos\google\protobuf\descriptor.proto" />
     <None Include="protos\tutorial\addressbook.proto" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\DistributedEventStream.Core\DistributedEventStream.Core.csproj">
+      <Project>{9c06d7d7-7768-490b-8ff7-0796d1d57555}</Project>
+      <Name>DistributedEventStream.Core</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\DistributedEventStream.Routing\DistributedEventStream.Routing.csproj">
+      <Project>{3189c55f-4601-4550-98ea-c7ccd590df31}</Project>
+      <Name>DistributedEventStream.Routing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SampleSharedActorLibrary\SampleSharedActorLibrary.csproj">
+      <Project>{a94b18ca-b9af-47e0-9264-ffa5f4b9fb58}</Project>
+      <Name>SampleSharedActorLibrary</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="CHANGES.txt" />
@@ -100,13 +125,7 @@
     <Content Include="licenses\protoc-license.txt" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\DistributedEventStream.Core\DistributedEventStream.Core.csproj">
-      <Project>{9c06d7d7-7768-490b-8ff7-0796d1d57555}</Project>
-      <Name>DistributedEventStream.Core</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="ActorSystems\" />
+    <Service Include="{82A7F48D-3B50-4B1E-B82E-3ADA8210C358}" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
