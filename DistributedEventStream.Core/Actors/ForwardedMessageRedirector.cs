@@ -4,17 +4,17 @@ using DistributedEventStream.Core.Messages;
 
 namespace DistributedEventStream.Core.Actors
 {
-    public class ForwardedMessageRedirector<TMessage> : ReceiveActor
+    public class ForwardedMessageRedirector : ReceiveActor
     {
         private readonly IActorRef _targetActor;
 
         public ForwardedMessageRedirector(IActorRef targetActor) : this(targetActor, null)
         {
         }
-        public ForwardedMessageRedirector(IActorRef targetActor, Func<Forward<TMessage>, bool> messageFilter)
+        public ForwardedMessageRedirector(IActorRef targetActor, Func<IForwardMessage, bool> messageFilter)
         {
             _targetActor = targetActor;
-            Receive<Forward<TMessage>>(message =>
+            Receive<IForwardMessage>(message =>
             {
                 if (messageFilter != null && !messageFilter.Invoke(message))
                     return;

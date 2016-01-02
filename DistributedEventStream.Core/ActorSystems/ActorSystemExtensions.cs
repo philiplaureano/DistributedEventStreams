@@ -10,12 +10,12 @@ namespace DistributedEventStream.Core.ActorSystems
     {
         public static IActorRef ForwardEventStreamMessages<TMessage>(this ActorSystem actorSystem,
             IActorRef targetActor,
-            Func<TMessage, string> getChannelName, 
+            Func<TMessage, string> getChannelName,
             string actorSystemAddress = null,
             Func<TMessage, bool> eventFilter = null)
-        {            
+        {
             return actorSystem.ForwardEventStreamMessages<TMessage>(targetActor,
-                msg => new Forward<TMessage>(msg, getChannelName(msg), actorSystemAddress, typeof (TMessage)));
+                msg => new Forward<TMessage>(msg, getChannelName(msg), actorSystemAddress, typeof(TMessage)));
         }
 
         public static IActorRef ForwardEventStreamMessages<TMessage>(this ActorSystem actorSystem,
@@ -32,13 +32,27 @@ namespace DistributedEventStream.Core.ActorSystems
 
             return eventForwarder;
         }
-        public static IActorRef RedirectForwardedMessagesTo<TMessage>(this ActorSystem actorSystem, 
-            IActorRef targetActor, Func<Forward<TMessage>, bool> messageFilter = null)
+        public static IActorRef RedirectForwardedMessagesTo<TMessage>(this ActorSystem actorSystem,
+            IActorRef targetActor, Func<IForwardMessage, bool> messageFilter = null)
         {
-            var redirector = actorSystem.ActorOf(Props.Create(() => 
-                new ForwardedMessageRedirector<TMessage>(targetActor, messageFilter)));
+            // Match the message type
+            Func<IForwardMessage, bool> defaultFilter = message => typeof(TMessage)
+                .IsAssignableFrom(message?.MessageType);
 
-            actorSystem.EventStream.Subscribe(redirector, typeof(Forward<TMessage>));
+            var filter = defaultFilter;
+            if (messageFilter != null)
+                filter = message => defaultFilter(message) && messageFilter(message);
+
+            return RedirectForwardedMessagesTo(actorSystem, targetActor, filter);
+        }
+
+        public static IActorRef RedirectForwardedMessagesTo(this ActorSystem actorSystem, IActorRef targetActor,
+            Func<IForwardMessage, bool> messageFilter)
+        {
+            var redirector = actorSystem.ActorOf(Props.Create(() =>
+                new ForwardedMessageRedirector(targetActor, messageFilter)));
+
+            actorSystem.EventStream.Subscribe(redirector, typeof(IForwardMessage));
 
             return redirector;
         }
