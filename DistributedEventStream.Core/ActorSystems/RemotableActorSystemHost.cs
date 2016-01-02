@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Akka.Actor;
 using Akka.Event;
 using DistributedEventStream.Core.Actors;
@@ -20,7 +21,7 @@ namespace DistributedEventStream.Core.ActorSystems
             _getOtherActors = getOtherActors;
         }
 
-        public RemotableActorSystemHost(int port, IEnumerable<string> otherActors) 
+        public RemotableActorSystemHost(int port, IEnumerable<string> otherActors)
             : this(port, otherActors.ToArray)
         {
         }
@@ -59,11 +60,22 @@ namespace DistributedEventStream.Core.ActorSystems
             return $"akka.tcp://{systemName}@{currentIpAddress}:{portNumber}";
         }
 
-        protected IActorRef ForwardEventStreamMessages<TMessage>(ActorSystem actorSystem, string targetChannelName, 
+        protected IActorRef ForwardEventStreamMessages<TMessage>(ActorSystem actorSystem, string targetChannelName,
             Func<TMessage, bool> messageFilter = null)
-        {            
+        {
             return actorSystem.ForwardEventStreamMessages(ForwardingActor,
                 msg => targetChannelName, GetAddress(actorSystem), messageFilter);
+        }
+
+        protected void ForwardMessageTo<TMessage>(ActorSystem sourceActorSystem, string remoteActorSystemAddress, TMessage message, string channel)
+        {
+            var targetAddress = $"{remoteActorSystemAddress}/user/local-publisher";
+            var packagedMessage = new Forward<TMessage>(message, channel, GetAddress(sourceActorSystem), typeof(TMessage));
+            
+            if(!sourceActorSystem.ActorSelection(targetAddress).CanBeResolved(TimeSpan.FromSeconds(10)))
+                throw new InvalidOperationException($"Unable to forward remote message to address '{targetAddress}'");
+
+            packagedMessage.TellFrom(sourceActorSystem, targetAddress);
         }
     }
 }

@@ -99,6 +99,7 @@
     <Compile Include="Messages\IActorAssociation.cs" />
     <Compile Include="Messages\IActorDissasociation.cs" />
     <Compile Include="Messages\IForwardMessage.cs" />
+    <Compile Include="Messages\MessageExtensions.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

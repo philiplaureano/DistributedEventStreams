@@ -5,7 +5,7 @@ namespace DistributedEventStream.Core.Actors
 {
     public static class ActorSelectionExtensions
     {
-        public static bool CanResolve(this ActorSelection actorSelection, TimeSpan timeoutPeriod)
+        public static bool CanBeResolved(this ActorSelection actorSelection, TimeSpan timeoutPeriod)
         {
             IActorRef targetActor = null;
             try

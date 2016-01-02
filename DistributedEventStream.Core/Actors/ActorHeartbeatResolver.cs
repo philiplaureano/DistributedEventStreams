@@ -23,7 +23,7 @@ namespace DistributedEventStream.Core.Actors
                 if (message.ActorAddress != actorAddress)
                     return;
 
-                if (Context.ActorSelection(_actorAddress).CanResolve(_timeoutPeriod))
+                if (Context.ActorSelection(_actorAddress).CanBeResolved(_timeoutPeriod))
                     return;
 
                 _parentActor.Tell(new ActorDissasociation(_actorAddress));

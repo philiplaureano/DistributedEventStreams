@@ -22,7 +22,7 @@ namespace DistributedEventStream.Core.Actors
                 var logger = Context.GetLogger();
 
                 // Add the address only if it can be resolved from the start
-                if (!Context.ActorSelection(message.ActorAddress).CanResolve(TimeSpan.FromSeconds(20)))
+                if (!Context.ActorSelection(message.ActorAddress).CanBeResolved(TimeSpan.FromSeconds(20)))
                 {
                     logger.Error($"Unable to resolve forwarding actor address '{message.ActorAddress}'");
                     return;

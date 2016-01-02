@@ -56,5 +56,15 @@ namespace DistributedEventStream.Core.ActorSystems
 
             return redirector;
         }
+
+        public static void BridgeRemoteEventStreams(this ActorSystem actorSystem, 
+            string sourceActorSystemAddress, string destinationActorSystemAddress)
+        {
+            var sourceActor = $"{sourceActorSystemAddress}/user/forwarder";
+            var destinationActor = $"{destinationActorSystemAddress}/user/local-publisher";
+
+            actorSystem?.ActorSelection(sourceActor)?
+                .Tell(new ActorAssociation(destinationActor));
+        }
     }
 }
