@@ -11,7 +11,6 @@ namespace DistributedEventStream.Core.Actors
     public class ForwardingActor : ForwardingActorBase
     {
         private readonly Dictionary<string, IActorRef> _actorAddresses = new Dictionary<string, IActorRef>();
-        private readonly List<IActorRef> _heartbeatMonitors = new List<IActorRef>();
         public ForwardingActor()
         {
             Receive<IActorAssociation>(message =>
@@ -31,16 +30,6 @@ namespace DistributedEventStream.Core.Actors
                 logger.Warning($"Actor associated: {message.ActorAddress}");
                 _actorAddresses[message.ActorAddress] =
                     Context.ActorOf(Props.Create(() => new ActorAdapter(message.ActorAddress)));
-
-                // Monitor the address for a valid connection state
-                var refreshRate = TimeSpan.FromSeconds(2);
-                var timeoutPeriod = TimeSpan.FromSeconds(5);
-                var monitor =
-                    Context.ActorOf(
-                        Props.Create(
-                            () => new ActorHeartbeatResolver(message.ActorAddress, Self, refreshRate, timeoutPeriod)));
-
-                _heartbeatMonitors.Add(monitor);
             });
 
             Receive<IActorDissasociation>(message =>
