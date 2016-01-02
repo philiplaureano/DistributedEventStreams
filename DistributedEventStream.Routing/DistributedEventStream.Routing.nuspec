@@ -23,6 +23,7 @@
       <dependency id="Helios" version="1.4.1"/>
       <dependency id="Google.ProtocolBuffers" version="2.4.1.521"/>
       <dependency id="Akka.Configuration.Lambdas" version="1.0.5840.30145"/>
+      <dependency id="DistributedEventStream.Core" version="1.0.5845.30828"/>
     </dependencies>
   </metadata>
 </package>
